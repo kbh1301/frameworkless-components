@@ -11,7 +11,8 @@ const buildComponentElmts = (componentName, componentHTML, targetDocument) => {
     let elmtsToGenerate = ['style','script','div'];
 
     return elmtsToGenerate.flatMap(elmtType => {
-        if(elmtType != 'div' && targetDocument.querySelector(`#${componentName}-${elmtType}`)) return [];
+        // return if element is empty or element is script/style that already exists in target document
+        if(elmtType != 'div' && targetDocument.querySelector(`#${componentName}-${elmtType}`) || !componentHTML.querySelector(`${elmtType}.component`).innerHTML.trim()) return [];
 
         const component = componentHTML.querySelector(`${elmtType}.component`).innerHTML;
         const importedElmt = targetDocument.createElement(elmtType);
@@ -37,7 +38,7 @@ const genUniqueComponentId = (componentName, targetDocument) => {
 };
 
 // Appends/prepends component elements where appropriate
-export const injectComponent = async (componentName, targetElmt=document.getElementById("container"), componentPath="./components/") => {
+export const injectComponent = async (componentName, targetElmt=document.getElementById("container"), divManip = () => {return}, componentPath="./components/") => {
     const targetDocument = targetElmt.ownerDocument;
 
     const componentHTML = await fetchHTML(componentName, componentPath);
@@ -49,6 +50,7 @@ export const injectComponent = async (componentName, targetElmt=document.getElem
         if(elmt.tagName == 'DIV') {
             elmt.dataset.increment = uniqueComponentId;
             elmt.id += uniqueComponentId;
+            divManip(elmt);
             return targetElmt.append(elmt);
         };
         if(elmt.tagName == 'SCRIPT') return targetDocument.body.append(elmt);
