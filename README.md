@@ -12,19 +12,20 @@ Build and inject reusable components & webpages with pure HTML, CSS, and JavaScr
         ```
         <script type="module">import { injectComponent } from './fetchHTML.js';</script>
         ```
-    2. Add div element to append component to and add id
-        - Use ```id="container"``` or a custom id that will need to be passed as an argument in the **injectComponent()** function
+    2. Add div element with ```id="container"```
+        - This will be the element the component div is appended to
+        - Alternatively, pass a target element as the second parameter of injectComponent()
     3. Call ```injectComponent()```
 ---
 ## Syntax
 ```
-injectComponent(componentName, targetId, componentPath)
+injectComponent(componentName, targetElmt, componentPath)
 ```
 ## Parameters
 |Parameter|Description|
 |-|-|
 |componentName|Required.<br/>The name of component to be injected.|
-|targetId|Optional.<br/>Default value ```container```.<br/>The id of element component will be injected into.|
+|targetElmt|Optional.<br/>Default value ```document.getElementById("container")```.<br/>The element component will be injected into.|
 |componentPath|Optional.<br/>Default value ```./components/```.<br/>The component's .html filepath.<br/>*(NOTE THE PATH IS RELATIVE TO WHERE **injectComponent()** IS IMPORTED)*|
 
 >*Final Note: for fetch() to function properly, project will likely need to be run on a server. I personally achieve this by opening the project folder in VSCode and running the [Live Preview extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server) on index.html*
