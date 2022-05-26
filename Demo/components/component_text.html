@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>component</title>
+</head>
+<body>
+    <!-- component css -->
+    <style class="component">
+        .component_text {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+        }
+        .highlight {
+            background-color: lavender;
+        }
+    </style>
+
+    <!-- component html -->
+    <div class="component component_text" id="component_text">
+        <p>Lorem ipsum</p>
+        <button onclick="highlight(this.parentNode.id)">Toggle Highlight</button>
+    </div>
+
+    <!-- component js -->
+    <script class="component">
+        const highlight = (id) => {
+            const component = document.getElementById(id);
+            component.classList.toggle('highlight');
+        };
+    </script>
+</body>
+</html>
+

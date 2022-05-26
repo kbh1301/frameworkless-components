@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Fetching</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="header">
+        <p>Build and inject <span>reusable components & webpages</span> with pure HTML, CSS, and JavaScript!</p>
+        <div class="header-btn-wrapper">
+            <input id="header-btn" type="button" value="click me!" onclick="injectComponent('component_text')">
+            <a href="https://github.com/kbh1301/frameworkless-components/" target="_blank"><i class="fa fa-github"></i></a>
+        </div>
+    </div>
+    <div id="container"></div>
+
+    <script type="module">
+        import { injectComponent } from '../Core Files/fetchHTML.js';
+        document.getElementById("header-btn").onclick = () => injectComponent('component_text');
+    </script>
+</body>
+</html>
