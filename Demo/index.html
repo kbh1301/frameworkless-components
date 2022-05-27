@@ -6,21 +6,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML Fetching</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/9b7e42d912.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/base16/material.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
 </head>
 <body>
-    <div class="header">
-        <p>Build and inject <span>reusable components & webpages</span> with pure HTML, CSS, and JavaScript!</p>
-        <div class="header-btn-wrapper">
-            <input id="header-btn" type="button" value="click me!" onclick="injectComponent('component_text')">
-            <a href="https://github.com/kbh1301/frameworkless-components/" target="_blank"><i class="fa fa-github"></i></a>
+    <div id="main-header" class="header">
+        <p><span>Reusable Components & WebPages</span> with pure HTML, CSS, and JavaScript!</p>
+        <a href="https://github.com/kbh1301/frameworkless-components/" target="_blank"><i class="fa-brands fa-github"></i></a>
+    </div>
+    <div id="demo-grid">
+        <div id="demo-spa" class="component-autogen"
+            data-componentName="component_demoSection"
+            data-title="Single-Page App"
+            data-desc="Dynamically switch pages without browser refresh">
+        </div>
+        <div id="demo-static" class="component-autogen"
+            data-componentName="component_demoSection"
+            data-title="Static Components"
+            data-desc="Components generated at runtime">
+        </div>
+        <div id="demo-repeatable" class="component-autogen"
+            data-componentname="component_demoSection"
+            data-title="Reusable Components"
+            data-desc="Build individualized components on demand from a single html file">
         </div>
     </div>
-    <div id="container"></div>
 
+    <script src="./script.js"></script>
     <script type="module">
-        import { injectComponent } from '../Core Files/fetchHTML.js';
-        document.getElementById("header-btn").onclick = () => injectComponent('component_text');
+        import { injectComponent, autoGenComponent } from '../Core Files/fetchHTML.js';
+
+        const staticCode = document.createElement('code');
+            staticCode.append(document.getElementById('demo-grid').innerHTML);
+
+        await autoGenComponent();
+
+        // demo section | single-page application
+        const demoSpa = document.getElementById("demo-spa");
+        await injectComponent('component_miniNav',demoSpa.querySelector(".container"));
+        await injectComponent('component_pageHome',demoSpa.querySelector(".container"),undefined,'./components/component_pages/');
+
+        const miniNav = document.querySelector("#component_miniNav1 ul");
+        miniNav.addEventListener("click", async () => {
+            if(event.target.tagName != "A") return;
+            const activePage = miniNav.parentNode.nextSibling;
+            const target = event.target.innerText;
+
+            if(activePage.dataset.page == target) return
+            activePage.remove()
+            await injectComponent(`component_page${target}`,demoSpa.querySelector(".container"),undefined,'./components/component_pages/');
+        });
+
+        // demo section | static
+        const demoStatic = document.getElementById("demo-static");
+            await appendTooltipText("component_demoSection",demoStatic.querySelector("code"));
+        const staticP = document.createElement('p');
+            staticP.innerText = "Each of these individual sections are generated at runtime!";
+            staticP.style.color = "white";
+        const staticPre = document.createElement('pre');
+            staticPre.className = "demotext";
+        staticPre.append(staticCode)
+        staticP.append(staticPre);
+        demoStatic.querySelector(".container").append(staticP);
+
+        // demo section | repeatable components
+        const demoRepeatable = document.getElementById("demo-repeatable");
+            await appendTooltipText("component_text",demoRepeatable.querySelector("code"));
+        const repeatBtn = document.createElement('button');
+            repeatBtn.id = "demo-sec-repeat-btn";
+            repeatBtn.innerText = "Click to Generate!";
+            repeatBtn.onclick = () => injectComponent('component_text',demoRepeatable.querySelector(".container"));
+        demoRepeatable.querySelector(".container").append(repeatBtn);
+        await injectComponent('component_text',demoRepeatable.querySelector(".container"));
+
+        hljs.highlightAll();
     </script>
 </body>
 </html>

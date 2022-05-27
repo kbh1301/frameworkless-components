@@ -8,17 +8,19 @@ const fetchHTML = async (componentName, componentPath) => {
 
 // Builds array of component elements from fetched HTML
 const buildComponentElmts = (componentName, componentHTML, targetDocument) => {
-    let elmtsToGenerate = ['style','script','div'];
+    let elmtsToGenerate = ['style','div','script'];
 
     return elmtsToGenerate.flatMap(elmtType => {
         // return if element is empty or element is script/style that already exists in target document
         if(elmtType != 'div' && targetDocument.querySelector(`#${componentName}-${elmtType}`) || !componentHTML.querySelector(`${elmtType}.component`).innerHTML.trim()) return [];
 
-        const component = componentHTML.querySelector(`${elmtType}.component`).innerHTML;
+        const component = componentHTML.querySelector(`${elmtType}.component`)
+
+        if(elmtType == 'div') return elmtType = component;
+
         const importedElmt = targetDocument.createElement(elmtType);
             importedElmt.id = `${componentName}-${elmtType}`;
-            importedElmt.innerHTML = component;
-            if(elmtType == 'div') importedElmt.className = componentName;
+            importedElmt.innerHTML = component.innerHTML;
 
         return elmtType = importedElmt;
     });
@@ -48,6 +50,12 @@ export const injectComponent = async (componentName, targetElmt=document.getElem
     componentElmts.forEach(elmt => {
         if(elmt.tagName == 'STYLE') return targetDocument.body.prepend(elmt);
         if(elmt.tagName == 'DIV') {
+
+            for (const property in targetElmt.dataset) {
+                const importedDivByProp = elmt.querySelector(`#prop-${property}`);
+                if(importedDivByProp) importedDivByProp.innerText = targetElmt.dataset[property];
+            };
+
             elmt.dataset.increment = uniqueComponentId;
             elmt.id += uniqueComponentId;
             divManip(elmt);
@@ -55,4 +63,15 @@ export const injectComponent = async (componentName, targetElmt=document.getElem
         };
         if(elmt.tagName == 'SCRIPT') return targetDocument.body.append(elmt);
     });
+};
+
+export const autoGenComponent = async () => {
+    const autoComponents = document.querySelectorAll(".component-autogen");
+
+    for(const component of autoComponents) {
+        const path = component.dataset.path;
+        const name = component.dataset.componentname;
+
+        await injectComponent(name,component,undefined,path);
+    };
 };
